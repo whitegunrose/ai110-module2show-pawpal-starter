@@ -7,6 +7,31 @@
 - Briefly describe your initial UML design.
 - What classes did you include, and what responsibilities did you assign to each?
 
+[ ] A user should be able to perform a minimum of these three actions:
+> - Add pet information alongside notes from owner
+> - Prioritize specific actions such as walks, medications or frequent grooming
+> - Must be able to add and edit preferences at will
+
+[ ] Main objects needed for the system:
+> Owner:
+> - list of pets [attr]
+> - schedule events (adding/editing/deleting) [method]
+>
+> Pet:
+> - owner [attr]
+> - list of priorities [attr]
+> - events added by owner [attr]
+> - schedule of events scheduled by priority [attr]
+>
+> Event:
+> - time of event [attr]
+> - duration of event [attr]
+> - event priority [attr]
+> 
+> Scheduler:
+> - list of events and their priorities [attr]
+> - schedule events by priorities and other owner needs [method]
+
 **b. Design changes**
 
 - Did your design change during implementation?
