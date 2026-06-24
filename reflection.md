@@ -37,6 +37,39 @@
 - Did your design change during implementation?
 - If yes, describe at least one change and why you made it.
 
+> Yes. Reviewing the initial skeleton against the design goals surfaced several
+missing relationships and bottlenecks, which I revised:
+>
+> - **Events are now attached to a specific pet.** `Owner.add_event`,
+  `edit_event`, and `delete_event` originally took only an `Event`, so the
+  system had no way to know *which* pet an event belonged to. They now take
+  `(pet, event)`, matching the core workflow "an owner adds an event for a pet."
+>
+> - **Events have a stable `id`.** Edit/delete previously relied on matching a
+  plain `Event` by value, so two identical events (same time/duration/priority)
+  were indistinguishable. Each `Event` now gets a unique `id`, so edits and
+  deletes target one event unambiguously.
+>
+> - **Priority lives only on `Event`.** I removed `Pet.priorities`. Having a
+  priority on both `Pet` and `Event` was ambiguous (default? override?
+  category?). Priority is a property of an individual event, so the single
+  `Event.priority` is the source of truth.
+>
+> - **The Scheduler now connects to the Pet and populates the schedule.**
+  `Scheduler.schedule` previously took a flat `list[Event]` and returned a list
+  that went nowhere. It now takes a `Pet`, reads `pet.events`, and writes the
+  resolved ordering into `pet.schedule`, so the "raw events" → "scheduled
+  events" distinction is actually wired up.
+>
+> - **Conflicts are now a first-class result.** The scheduler returns a
+  `ScheduleResult` (`scheduled` + `conflicts`), and `Event` gained `end` and
+  `overlaps()` helpers. This gives overlap resolution between competing
+  priorities a place to live instead of being silent.
+>
+> - **Owner ↔ Pet stays in sync.** Added `Owner.add_pet`, which is responsible
+  for keeping `owner.pets` and `pet.owner` consistent in both directions rather
+  than leaving the bidirectional link unenforced.
+
 ---
 
 ## 2. Scheduling Logic and Tradeoffs

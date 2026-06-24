@@ -3,30 +3,38 @@ classDiagram
 
     class Owner {
         +List~Pet~ pets
-        +addEvent(event Event) void
-        +editEvent(event Event) void
-        +deleteEvent(event Event) void
+        +addPet(pet Pet) void
+        +addEvent(pet Pet, event Event) void
+        +editEvent(pet Pet, event Event) void
+        +deleteEvent(pet Pet, event Event) void
     }
 
     class Pet {
         +Owner owner
-        +List~Priority~ priorities
         +List~Event~ events
         +List~Event~ schedule
     }
 
     class Event {
+        +int id
         +DateTime time
         +Duration duration
         +Priority priority
+        +end() DateTime
+        +overlaps(other Event) bool
+    }
+
+    class ScheduleResult {
+        +List~Event~ scheduled
+        +List~Event~ conflicts
     }
 
     class Scheduler {
-        +List~Event~ events
-        +schedule(events List~Event~) List~Event~
+        +schedule(pet Pet) ScheduleResult
     }
 
     Owner "1" --> "*" Pet : owns
     Pet "*" --> "1" Owner : belongs to
     Pet "1" --> "*" Event : has
-    Scheduler "1" --> "*" Event : schedules
+    Scheduler ..> Pet : reads events / writes schedule
+    Scheduler ..> ScheduleResult : returns
