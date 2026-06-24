@@ -1,15 +1,32 @@
 classDiagram
-    %% Replace the placeholders below with your actual classes, attributes, methods, and relationships.
-    %% Keep this file updated so it matches your final implementation.
+    %% PawPal+ initial design — Owner, Pet, Event, Scheduler
 
-    class ClassName {
-        +type attribute
-        +method() returnType
+    class Owner {
+        +List~Pet~ pets
+        +addEvent(event Event) void
+        +editEvent(event Event) void
+        +deleteEvent(event Event) void
     }
 
-    class AnotherClass {
-        +type attribute
-        +method() returnType
+    class Pet {
+        +Owner owner
+        +List~Priority~ priorities
+        +List~Event~ events
+        +List~Event~ schedule
     }
 
-    ClassName --> AnotherClass : relationship
+    class Event {
+        +DateTime time
+        +Duration duration
+        +Priority priority
+    }
+
+    class Scheduler {
+        +List~Event~ events
+        +schedule(events List~Event~) List~Event~
+    }
+
+    Owner "1" --> "*" Pet : owns
+    Pet "*" --> "1" Owner : belongs to
+    Pet "1" --> "*" Event : has
+    Scheduler "1" --> "*" Event : schedules
